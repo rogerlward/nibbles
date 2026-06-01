@@ -15,8 +15,6 @@ from config import (
     COLOR_FOOD,
     COLOR_SNAKE,
     COLOR_SCORE,
-    GRID_HEIGHT,
-    GRID_WIDTH,
     SYMBOL_FOOD,
     SYMBOL_PAUSE,
     SYMBOL_SNAKE_BODY,
@@ -29,6 +27,8 @@ class Renderer:
 
     def __init__(self, stdscr) -> None:
         self.stdscr = stdscr
+        # Store the current terminal size for dynamic calculations.
+        self._max_y, self._max_x = stdscr.getmaxyx()
         self._setup_colors()
 
     # ------------------------------------------------------------------
@@ -97,12 +97,12 @@ class Renderer:
     def _draw_score(self, board: Board) -> None:
         """Draw the score centered at the top."""
         text = f" Score: {board.score} "
-        x = GRID_WIDTH // 2 - len(text) // 2
+        x = self._max_x // 2 - len(text) // 2
         self.stdscr.addstr(0, x, text, curses.color_pair(COLOR_SCORE))
 
     def _draw_pause(self) -> None:
         """Draw a PAUSED overlay in the center of the screen."""
-        center_y = GRID_HEIGHT // 2
+        center_y = self._max_y // 2
         text = SYMBOL_PAUSE
         x = GRID_WIDTH // 2 - len(text) // 2
         self.stdscr.addstr(center_y, x, text, curses.color_pair(COLOR_SCORE))
@@ -118,8 +118,8 @@ class Renderer:
         self.stdscr.border()
 
         msg = f" Game Over! Score: {score} "
-        y = GRID_HEIGHT // 2
-        x = GRID_WIDTH // 2 - len(msg) // 2
+        y = self._max_y // 2
+        x = self._max_x // 2 - len(msg) // 2
         self.stdscr.addstr(y, x, msg, curses.color_pair(COLOR_SCORE))
 
         self.stdscr.addstr(y + 2, x, " Press any key to quit... ")
