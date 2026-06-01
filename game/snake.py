@@ -29,19 +29,19 @@ class Snake:
 
         Returns the new head coordinate.
         """
-        head = self.body[-1]
-        x, y = head
+        # ``self.body`` stores coordinates as (row, col) i.e. (y, x).
+        head_y, head_x = self.body[-1]
 
         if self.direction == curses.KEY_UP:
-            y -= 1
+            head_y -= 1
         elif self.direction == curses.KEY_DOWN:
-            y += 1
+            head_y += 1
         elif self.direction == curses.KEY_LEFT:
-            x -= 1
+            head_x -= 1
         elif self.direction == curses.KEY_RIGHT:
-            x += 1
+            head_x += 1
 
-        new_head: Coord = (y, x)
+        new_head: Coord = (head_y, head_x)
         self.body.append(new_head)
 
         if not self.growing:
@@ -71,7 +71,12 @@ class Snake:
     def check_wall_collision(self, width: int, height: int) -> bool:
         """Return True if the head is outside the grid boundaries."""
         head = self.body[-1]
-        x, y = head
+        # The coordinate tuple is stored as (y, x) where y is the row and x is
+        # the column.  The original implementation unpacked it as ``x, y``
+        # which swapped the values and caused an immediate collision when
+        # ``y`` (the row) was compared against the width.  This resulted in
+        # the game ending on the first frame.
+        y, x = head  # correct order: row then column
         return x < 0 or x >= width or y < 0 or y >= height
 
     def check_self_collision(self) -> bool:
