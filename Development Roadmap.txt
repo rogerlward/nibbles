@@ -1,0 +1,21 @@
+Development Roadmap
+Phase 1: Core Engine (main.py & config.py)
+Define constants: GRID_WIDTH, GRID_HEIGHT, INITIAL_SPEED, COLOR_PAIRS.
+Implement the main game loop using curses.initscr().
+Handle curses setup: curses.curs_set(0) (hide cursor), curses.start_color(), curses.noecho().
+Phase 2: Game Logic (game/snake.py & game/food.py)
+Snake Class:
+Store body as a list of coordinates [(x,y), (x,y)].
+move(): Add new head based on direction, remove tail (unless eating).
+grow(): Prevent tail removal for one frame.
+check_collision(): Check walls and self-intersection.
+Food Class:
+spawn(): Generate random coordinates not occupied by the snake.
+Phase 3: Rendering (ui/renderer.py)
+Draw Grid: Use curses.addch(y, x, char) for performance.
+Colors: Define color pairs (e.g., Green snake, Red food, Black background).
+Input: Use curses.nodelay(stdscr, True) for non-blocking input. Handle KEY_UP, KEY_DOWN, etc.
+Phase 4: Polish
+Speed Scaling: Decrease the sleep time between frames as the snake grows.
+High Score: Save/load high score from a local text file using pathlib.
+Pause/Quit: Handle ESC to quit and SPACE to pause.
