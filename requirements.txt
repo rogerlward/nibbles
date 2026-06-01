@@ -1,0 +1,2 @@
+# For Windows users only. Mac/Linux users can ignore this file.
+windows-curses>=2.3.0; sys_platform == 'win32'
