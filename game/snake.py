@@ -77,7 +77,9 @@ class Snake:
         # ``y`` (the row) was compared against the width.  This resulted in
         # the game ending on the first frame.
         y, x = head  # correct order: row then column
-        return x < 0 or x >= width or y < 0 or y >= height
+        # The border occupies the outermost rows/columns. The snake should
+        # not enter these cells, so we treat positions <=0 or >=width-1 / height-1
+        return x <= 0 or x >= width - 1 or y <= 0 or y >= height - 1
 
     def check_self_collision(self) -> bool:
         """Return True if the head collides with any part of its own body."""

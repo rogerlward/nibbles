@@ -8,7 +8,7 @@ from __future__ import annotations
 import curses
 import sys
 
-from config import GRID_HEIGHT, GRID_WIDTH
+from config import GRID_HEIGHT, GRID_WIDTH  # kept for backward compatibility but not used directly
 from game.board import Board
 from game.food import Food
 from game.snake import Snake
@@ -24,8 +24,12 @@ def main(stdscr) -> None:
     board = Board()
     renderer = Renderer(stdscr)
 
-    # --- Initial food spawn ---
-    food.spawn(GRID_WIDTH, GRID_HEIGHT, snake.body)
+    # Initial food spawn using dynamic terminal size
+    max_y, max_x = stdscr.getmaxyx()
+    food.spawn(max_x, max_y, snake.body)
+
+    # Get current terminal size for collision checks
+    max_y, max_x = stdscr.getmaxyx()
 
     # --- Main game loop ---
     while not board.game_over:
@@ -48,7 +52,7 @@ def main(stdscr) -> None:
         new_head = snake.move()
 
         # Collision checks
-        if snake.check_wall_collision(GRID_WIDTH, GRID_HEIGHT):
+        if snake.check_wall_collision(max_x, max_y):
             board.end_game()
             break
         if snake.check_self_collision():
@@ -59,7 +63,7 @@ def main(stdscr) -> None:
         if new_head == food.position:
             board.eat_food()
             snake.grow()
-            food.spawn(GRID_WIDTH, GRID_HEIGHT, snake.body)
+            food.spawn(max_x, max_y, snake.body)
 
         # Render
         renderer.render(snake, food, board)
